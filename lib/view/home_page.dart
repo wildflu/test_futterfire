@@ -69,7 +69,7 @@ class HomePage extends StatelessWidget {
             controller: _refreshController,
             header: const WaterDropHeader(),
             child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 1, childAspectRatio: 0.8),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 1, mainAxisExtent: 250),
               itemCount: userDB.userData.length,
               itemBuilder: (context, index) {
                 return UserComp(user: userDB.userData[index]);
