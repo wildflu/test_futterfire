@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:testn/model/user.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../components/user_comp.dart';
 import '../get_controller/data_user.dart';
@@ -12,11 +13,15 @@ final _firebasestore = FirebaseFirestore.instance;
 
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
+  HomePage({super.key});
+  UserData userDB = Get.put(UserData());
+  final RefreshController _refreshController = RefreshController(initialRefresh: false);
+  void onRefresh() async{
+    userDB.getUsersData();
+    _refreshController.refreshCompleted();
+  }
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -26,13 +31,28 @@ class HomePage extends StatelessWidget {
         toolbarHeight: 70,
         title: const Text("Test"),
       ),
-      floatingActionButton: FloatingActionButton.extended(onPressed: (){
-
-      }, label: const Text('sorted Users')),
-      body: Container(
-        child: StremOnUsers(),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => userDB.filterByInterests(['travel']),
+        label: const Text('sorted Users')
       ),
-    );
+      body: GetBuilder<UserData>(
+          init: UserData(),
+          builder: (controller) {
+          return SmartRefresher(
+            onRefresh: onRefresh,
+            enablePullDown: true,
+            enablePullUp: true,
+            controller: _refreshController,
+            header: WaterDropHeader(),
+            child: ListView.builder(
+              itemCount: userDB.userData.length,
+              itemBuilder: (context, index) {
+                return UserComp(user: userDB.userData[index]);
+              },
+            ),
+          );
+      }
+    ));
   }
 }
 

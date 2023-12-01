@@ -7,6 +7,7 @@ import '../model/user.dart';
 class UserComp extends StatelessWidget {
   const UserComp({super.key, required this.user});
   final User user;
+  
 
   @override
   Widget build(BuildContext context) {
