@@ -10,22 +10,6 @@ class UserData extends GetxController {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   List<User> userData = [];
   
-
-
-  @override
-  void onInit() {
-    super.onInit();
-    FirebaseFirestore.instance
-    .collection('users')
-    .get()
-    .then((QuerySnapshot querySnapshot) {
-        for (var doc in querySnapshot.docs) {
-          User user = User(doc['id'], doc['name'], doc['friends'], doc['interests']);
-          userData.add(user);
-        }
-    });
-  }
-  
 }
 
 
