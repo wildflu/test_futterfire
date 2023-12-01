@@ -25,6 +25,7 @@ class UserData extends GetxController {
         }
     });
   }
+  
 }
 
 
