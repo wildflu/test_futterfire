@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:testn/model/user.dart';
 
+import '../components/user_comp.dart';
 import '../get_controller/data_user.dart';
 
 final _firebasestore = FirebaseFirestore.instance;
@@ -16,7 +17,6 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    UserData userDb = Get.put(UserData());
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -26,6 +26,9 @@ class HomePage extends StatelessWidget {
         toolbarHeight: 70,
         title: const Text("Test"),
       ),
+      floatingActionButton: FloatingActionButton.extended(onPressed: (){
+
+      }, label: const Text('sorted Users')),
       body: Container(
         child: StremOnUsers(),
       ),
@@ -35,9 +38,9 @@ class HomePage extends StatelessWidget {
 
 class StremOnUsers extends StatelessWidget {
   const StremOnUsers({super.key});
-
   @override
   Widget build(BuildContext context) {
+    List userIntrast = [];
     List<User> listUsers = [];
     return StreamBuilder<QuerySnapshot>(
               stream: _firebasestore.collection('users').snapshots(),
@@ -55,11 +58,7 @@ class StremOnUsers extends StatelessWidget {
                   listUsers.add(user);
                 }
                 return ListView.builder(
-                  itemBuilder: (context, index) {
-                    return Container(
-                      child: Text(listUsers[index].name),
-                    );
-                  },
+                  itemBuilder: (context, index) => UserComp(user: listUsers[index]),
                 );
               }
           );
