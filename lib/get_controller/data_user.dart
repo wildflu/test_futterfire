@@ -9,8 +9,18 @@ class UserData extends GetxController {
   List<User> userData = [];
 
   Future getUsersData() async{
-    // userData.clear();
-    QuerySnapshot querySnapshot = await usersCollection.get();
+    userData.clear();
+    QuerySnapshot querySnapshot = await usersCollection.orderBy('id', descending:false) .limit(15).get();
+    for (QueryDocumentSnapshot documentSnapshot in querySnapshot.docs) {
+      Map<String, dynamic> datadoc = documentSnapshot.data() as Map<String, dynamic>;
+      User user = User(datadoc['id'], datadoc['name'], datadoc['friends'], datadoc['interests']);
+      userData.add(user);
+    }
+    update();
+  }
+
+  loadMore()async{
+    QuerySnapshot querySnapshot = await usersCollection.orderBy('id', descending: false).where('id', isGreaterThan: userData.length).limit(15).get();
     for (QueryDocumentSnapshot documentSnapshot in querySnapshot.docs) {
       Map<String, dynamic> datadoc = documentSnapshot.data() as Map<String, dynamic>;
       User user = User(datadoc['id'], datadoc['name'], datadoc['friends'], datadoc['interests']);
