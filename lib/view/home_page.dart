@@ -14,6 +14,7 @@ import '../get_controller/pagenation_controller.dart';
 final _firebasestore = FirebaseFirestore.instance;
 
 
+// ignore: must_be_immutable
 class HomePage extends StatelessWidget {
   HomePage({super.key});
   UserData userDB = Get.put(UserData());
@@ -22,12 +23,16 @@ class HomePage extends StatelessWidget {
     userDB.getUsersData();
     _refreshController.refreshCompleted();
   }
+  // this is the functions that load more that
   void onLoading() async{
-    // monitor network fetch
     await Future.delayed(Duration(milliseconds: 1000));
-    // if failed,use loadFailed(),if no data return,use LoadNodata()
-    userDB.loadMore();
-    _refreshController.loadComplete();
+    bool nomoredata = await userDB.loadMore();
+    if(!nomoredata) {
+      _refreshController.loadComplete();
+      
+    } else {
+      _refreshController.loadNoData();
+    }
   }
 
   @override

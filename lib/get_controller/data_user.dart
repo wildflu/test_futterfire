@@ -10,7 +10,7 @@ class UserData extends GetxController {
 
   Future getUsersData() async{
     userData.clear();
-    QuerySnapshot querySnapshot = await usersCollection.orderBy('id', descending:false) .limit(15).get();
+    QuerySnapshot querySnapshot = await usersCollection.orderBy('id', descending:false).limit(15).get();
     for (QueryDocumentSnapshot documentSnapshot in querySnapshot.docs) {
       Map<String, dynamic> datadoc = documentSnapshot.data() as Map<String, dynamic>;
       User user = User(datadoc['id'], datadoc['name'], datadoc['friends'], datadoc['interests']);
@@ -19,7 +19,8 @@ class UserData extends GetxController {
     update();
   }
 
-  loadMore()async{
+  Future<bool> loadMore()async{
+    int index = userData.length;
     QuerySnapshot querySnapshot = await usersCollection.orderBy('id', descending: false).where('id', isGreaterThan: userData.length).limit(15).get();
     for (QueryDocumentSnapshot documentSnapshot in querySnapshot.docs) {
       Map<String, dynamic> datadoc = documentSnapshot.data() as Map<String, dynamic>;
@@ -27,11 +28,11 @@ class UserData extends GetxController {
       userData.add(user);
     }
     update();
+    return index == userData.length;
   }
 
   filterByInterests(List intreKey, target){
     List<User> filteredUsers = userData.where((user) {
-      // return user.interests.any((interest) => intreKey.contains(interest));
       switch (target) {
         case 'i':
           return user.interests.any((interest) => intreKey.contains(interest));
